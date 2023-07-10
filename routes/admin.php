@@ -16,9 +16,16 @@ Route::middleware('guest')->group(function (){
     Route::post('/forgetPassword',[\App\Http\Controllers\auth\forgetPasswordManager::class, 'forgetPassword'] )->name('forgetPasswordPost');
     Route::get('/resetPassword/{token}',[\App\Http\Controllers\auth\forgetPasswordManager::class, 'resetPassword'] )->name('resetPassword');
     Route::post('/resetPassword/post',[\App\Http\Controllers\auth\forgetPasswordManager::class, 'resetPasswordPost'])->name('resetPasswordPost');
-});
-Route::middleware('auth')->group(function (){
-    Route::get('/dashboard', [\App\Http\Controllers\auth\authController::class, 'dashboard'])->name('dashboard');
-    Route::get('/logout', [\App\Http\Controllers\auth\authController::class, 'logout'])->name('logout');
 
 });
+Route::prefix('dashboard')->middleware('auth')->group(function (){
+    Route::get('/', [\App\Http\Controllers\auth\authController::class, 'dashboard'])->name('dashboard');
+    Route::get('/logout', [\App\Http\Controllers\auth\authController::class, 'logout'])->name('logout');
+    Route::resource('category', \App\Http\Controllers\admin\categoryController::class);
+    Route::resource('sub_category', \App\Http\Controllers\admin\subCategoryController::class);
+    Route::resource('brand', \App\Http\Controllers\admin\brandController::class);
+    Route::get('/brand_name', [App\Http\Controllers\admin\brandController::class, 'brand_name']);
+    Route::resource('product', \App\Http\Controllers\admin\productController::class);
+});
+
+Route::get('/myuser', [App\Http\Controllers\admin\categoryController::class, 'userview']);
